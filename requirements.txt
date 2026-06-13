@@ -1,39 +1,14 @@
-# IHSG Stock Screener - Requirements
-# Trading Platform Dependencies
-
-# Core Framework
 streamlit>=1.28.0
-python>=3.10.0
 
-# Data Processing
 pandas>=2.1.0
 numpy>=1.24.0
 
-# Financial Data
 yfinance>=0.2.36
 
-# Timezone Support
 pytz>=2024.1
-
-# Visualization
 plotly>=5.18.0
 
-# Caching & Performance
-st_pages>=0.4.0  # Multi-page support (optional)
-
-# Utilities
 requests>=2.31.0
 python-dateutil>=2.8.2
 
-# Testing
-pytest>=7.4.0
-pytest-asyncio>=0.21.0
-httpx>=0.25.0  # For async testing
-
-# Type Checking
-mypy>=1.7.0
-
-# Code Quality
-black>=23.0.0
-isort>=5.12.0
-flake8>=6.1.0
+httpx>=0.25.0
