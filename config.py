@@ -254,7 +254,7 @@ class WatchlistConfig:
         "Infrastructure": ["PTPP.JK", "WIKA.JK", "WEGE.JK", "ADHI.JK", "JMAS.JK", "JSMR.JK", "TOTL.JK", "SSIA.JK", "DGIK.JK", "WTON.JK"],
         "Power & Energy": ["PGAS.JK", "PTUN.JK", "MADE.JK", "KOPI.JK", "PWER.JK"],
         "Metal & Mineral": ["AMMN.JK", "MDKA.JK", "INCO.JK", "NICL.JK"],
-        "Shipping & Maritime": ["HASI.JK", "DEAL.JK", "KRAK.JK", "IKBI.JK", "SAFE.JK"]
+        "Shipping & Maritime": ["TPMA.JK", "WINS.JK", "HITS.JK", "BBRM.JK", "SMDR.JK", "TMAS.JK", "SOCI.JK"]
     })
 
 
