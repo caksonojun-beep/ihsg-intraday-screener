@@ -240,17 +240,20 @@ class WatchlistConfig:
 
     # Group categories
     TICKER_GROUPS: Dict[str, List[str]] = field(default_factory=lambda: {
-        "Banking": ["BBCA.JK", "BBRI.JK", "BMRI.JK", "BBNI.JK", "BDMN.JK", "BTPN.JK", "NISP.JK"],
-        "Consumer": ["UNVR.JK", "ICBP.JK", "INDF.JK", "KLBF.JK", "HMSP.JK", "MYOR.JK", "ROTI.JK"],
-        "Mining": ["ANTM.JK", "TINS.JK", "PTBA.JK", "ADRO.JK", "ITMG.JK", "KDTN.JK", "INDY.JK"],
-        "Property": ["BSDE.JK", "PWON.JK", "SMRA.JK", "CTRA.JK", "LPKR.JK", "DMAS.JK", "PPRO.JK"],
-        "Automotive": ["ASII.JK", "GJTL.JK", "IMAS.JK", "MAPI.JK", "RALS.JK", "SMSM.JK"],
-        "Telecom": ["TLKM.JK", "EXCL.JK", "FREN.JK", "ISAT.JK", "HEAL.JK"],
-        "Tech": ["GOTO.JK", "BUKA.JK", "MCAS.JK", "BALI.JK"],
-        "Healthcare": ["PRDA.JK", "MIKA.JK", "SILO.JK", "HEAL.JK", "ELSA.JK"],
-        "Chemicals": ["TPIA.JK", "UNVR.JK", "AKPI.JK", "argo"],
-        "Oil & Gas": ["UNSP.JK", "PTDO.JK", "MITI.JK", "RUIS.JK"],
-        "Retail": ["MAPA.JK", "MAPI.JK", "RALS.JK", "HERO.JK", "MAT1.JK"]
+        "Banking": ["BBCA.JK", "BBRI.JK", "BMRI.JK", "BBNI.JK", "BDMN.JK", "BTPN.JK", "NISP.JK", "BJBR.JK", "BJTM.JK", "BRIS.JK", "BNGA.JK", "MEGA.JK"],
+        "Consumer": ["UNVR.JK", "ICBP.JK", "INDF.JK", "KLBF.JK", "HMSP.JK", "MYOR.JK", "ROTI.JK", "GOOD.JK", "PSKT.JK", "ACES.JK"],
+        "Mining": ["ANTM.JK", "TINS.JK", "PTBA.JK", "ADRO.JK", "ITMG.JK", "KDTN.JK", "INDY.JK", "DEWA.JK", "PKRT.JK", "HRUM.JK", "ADMR.JK", "BRMS.JK", "BUMI.JK", "CUAN.JK", "PTRO.JK", "MBMA.JK", "NICL.JK", "RAJA.JK", "TOBA.JK"],
+        "Property": ["BSDE.JK", "PWON.JK", "SMRA.JK", "CTRA.JK", "LPKR.JK", "DMAS.JK", "PPRO.JK", "GMTD.JK", "DART.JK"],
+        "Automotive": ["ASII.JK", "GJTL.JK", "IMAS.JK", "MAPI.JK", "RALS.JK", "SMSM.JK", "HEXA.JK", "BOLT.JK"],
+        "Telecom": ["TLKM.JK", "EXCL.JK", "FREN.JK", "ISAT.JK", "HEAL.JK", "MTEL.JK", "TOWR.JK", "TBIG.JK"],
+        "Tech": ["GOTO.JK", "BUKA.JK", "MCAS.JK", "BALI.JK", "DMMX.JK", "EDGE.JK", "MTDL.JK", "MLPT.JK", "TECH.JK", "KIOS.JK"],
+        "Healthcare": ["PRDA.JK", "MIKA.JK", "SILO.JK", "HEAL.JK", "ELSA.JK", "KARW.JK", "SOHO.JK", "MEDC.JK", "PGEO.JK"],
+        "Chemicals": ["TPIA.JK", "UNVR.JK", "AKPI.JK", "ARGO.JK", "SMGR.JK", "WSKT.JK"],
+        "Oil & Gas": ["UNSP.JK", "PTDO.JK", "MITI.JK", "RUIS.JK", "ELSA.JK", "PMAX.JK", "AKRA.JK", "UNTR.JK"],
+        "Retail": ["MAPA.JK", "MAPI.JK", "RALS.JK", "HERO.JK", "MAT1.JK", "AMRT.JK", "LPPF.JK", "ERAA.JK"],
+        "Infrastructure": ["PTPP.JK", "WIKA.JK", "WEGE.JK", "ADHI.JK", "JMAS.JK", "JSMR.JK", "TOTL.JK", "SSIA.JK", "DGIK.JK", "WTON.JK"],
+        "Power & Energy": ["PGAS.JK", "PTUN.JK", "MADE.JK", "KOPI.JK", "PWER.JK"],
+        "Metal & Mineral": ["AMMN.JK", "MDKA.JK", "INCO.JK", "NICL.JK"]
     })
 
 
