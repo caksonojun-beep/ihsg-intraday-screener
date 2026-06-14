@@ -1205,50 +1205,37 @@ def render_bpjs_section():
     st.markdown("### ☀️ BPJS Detector")
     st.markdown("*Beli Pagi Jual Sore - Day Trading Strategy*")
 
-    # Analyze stocks for BPJS
-    if st.session_state.bpjs_stocks:
-        bpjs_stocks = st.session_state.bpjs_stocks
-    else:
-        # Analyze scored stocks for BPJS
-        stocks_data = [{
-            'ticker': s.ticker,
-            'name': s.name,
-            'price': s.price,
-            'change_pct': s.change_pct,
-            'volume_spike': s.volume_spike
-        } for s in st.session_state.scored_stocks]
-
-        bpjs_stocks = st.session_state.bpjs_detector.analyze_batch(stocks_data)
-        st.session_state.bpjs_stocks = bpjs_stocks
+    # Use main screener scores for consistency
+    scored_stocks = st.session_state.scored_stocks
 
     # Filter options
     col1, col2, col3 = st.columns(3)
 
     with col1:
         min_score = st.slider(
-            "🎯 Min BPJS Score",
+            "🎯 Min Score",
             min_value=0,
             max_value=100,
             value=60,
-            help="Minimum BPJS score for filtering"
+            help="Minimum score for filtering"
         )
         st.caption("""
-        **BPJS Score:** 0-100
+        **Score:** 0-100 (dari main screener)
 
         | Score | Rekomendasi |
         |-------|-------------|
-        | 75+ | ⭐ STRONG BPJS |
-        | 60-74 | ✅ BPJS |
-        | 45-59 | 👀 WATCH |
-        | < 45 | ❌ AVOID |
+        | 85+ | ⭐ STRONG BUY |
+        | 70-84 | ✅ BUY |
+        | 50-69 | 👀 HOLD |
+        | < 50 | ❌ SELL |
         """)
 
     with col2:
         min_change = st.slider(
             "📈 Min Price Change %",
-            min_value=0.0,
-            max_value=10.0,
-            value=0.5,
+            min_value=-5.0,
+            max_value=15.0,
+            value=0.0,
             step=0.5,
             help="Minimum price change percentage"
         )
@@ -1258,50 +1245,47 @@ def render_bpjs_section():
         - 3%+ : Exceptional momentum
         - 2%+ : Strong momentum
         - 1%+ : Moderate momentum
-        - < 1% : Weak
         """)
 
     with col3:
         signal_filter = st.selectbox(
             "🔍 Filter by Signal",
-            options=["All", "STRONG BPJS", "BPJS"],
+            options=["All", "STRONG BUY", "BUY", "HOLD"],
             help="Filter by signal type"
         )
         st.caption("""
         **Signal Type:**
 
-        - STRONG BPJS: Siap untuk day trade
-        - BPJS: Bisa day trade
-        - WATCH: Perlu observasi lebih lanjut
+        - STRONG BUY: Siap untuk buy
+        - BUY: Bisa untuk buy
+        - HOLD: Wait & see
         """)
 
-    # Filter stocks
-    filtered = st.session_state.bpjs_detector.filter_bpjs_stocks(
-        bpjs_stocks,
-        min_score=min_score,
-        min_change=min_change
-    )
+    # Filter stocks using main screener scores
+    filtered = [
+        s for s in scored_stocks
+        if s.score >= min_score
+        and s.change_pct >= min_change
+    ]
 
     if signal_filter != "All":
-        signal_type = BPJSSignal.STRONG_BPJS if signal_filter == "STRONG BPJS" else BPJSSignal.BPJS
-        filtered = [s for s in filtered if s.signal == signal_type]
+        filtered = [s for s in filtered if s.signal.value == signal_filter]
 
     if not filtered:
-        st.info("Tidak ada saham yang match dengan filter BPJS.")
+        st.info("Tidak ada saham yang match dengan filter.")
         return
 
-    # Display BPJS table
+    # Sort by score
+    filtered = sorted(filtered, key=lambda x: x.score, reverse=True)
+
+    # Display table
     df = pd.DataFrame([
         {
             'Ticker': s.ticker,
             'Change %': s.change_pct,
             'Volume': f"{s.volume_spike:.2f}x",
-            'Score': s.bpjs_score,
-            'Entry': s.best_entry_window,
-            'Exit': s.best_exit_window,
-            'Target': f"+{s.target_profit}%",
-            'Stop': f"-{s.stop_loss}%",
-            'Recommendation': s.recommendation
+            'Score': s.score,
+            'Signal': s.signal.value
         }
         for s in filtered
     ])
@@ -1313,34 +1297,34 @@ def render_bpjs_section():
             "Change %": st.column_config.NumberColumn("Change %", format="%.2f", width="small"),
             "Volume": st.column_config.TextColumn("Volume", width="small"),
             "Score": st.column_config.NumberColumn("Score", format="%d", width="small"),
-            "Entry": st.column_config.TextColumn("Entry Window", width="medium"),
-            "Exit": st.column_config.TextColumn("Exit Window", width="medium"),
-            "Target": st.column_config.TextColumn("Target", width="small"),
-            "Stop": st.column_config.TextColumn("Stop Loss", width="small"),
-            "Recommendation": st.column_config.TextColumn("Recommendation", width="medium"),
+            "Signal": st.column_config.TextColumn("Signal", width="medium"),
         },
         hide_index=True,
         use_container_width=True,
         height=400
     )
 
-    # Top BPJS picks
+    # Top picks
     st.markdown("#### 🎯 Top BPJS Picks")
 
-    top_bpjs = st.session_state.bpjs_detector.get_top_bpjs_picks(filtered, n=5)
+    top_picks = filtered[:5]
 
-    for i, stock in enumerate(top_bpjs, 1):
-        emoji = "⭐" if stock.bpjs_score >= 75 else "✅" if stock.bpjs_score >= 60 else "👀"
+    for i, s in enumerate(top_picks, 1):
+        emoji = "⭐" if s.score >= 85 else "✅" if s.score >= 70 else "👀"
+        entry_time = "08:30-09:00" if s.change_pct >= 2 else "09:00-09:30"
+        exit_time = "14:00-14:30" if s.change_pct >= 2 else "14:30-15:00"
+        target = 2.0 if s.change_pct >= 2 else 1.5
+        stop = 1.0
+
         st.markdown(f"""
-        **{i}. {stock.ticker}** {emoji}
-        - Price: IDR {stock.price:,.0f} | Change: {stock.change_pct:+.2f}%
-        - Score: {stock.bpjs_score} | Signal: {stock.signal.value}
-        - Entry: {stock.best_entry_window}
-        - Exit: {stock.best_exit_window}
-        - Target: +{stock.target_profit}% | Stop: -{stock.stop_loss}%
+        **{i}. {s.ticker}** {emoji}
+        - Price: IDR {s.price:,.0f} | Change: {s.change_pct:+.2f}%
+        - Score: {s.score} | Signal: {s.signal.value}
+        - Entry: {entry_time} | Exit: {exit_time}
+        - Target: +{target}% | Stop: -{stop}%
         """)
 
-    # BPJS Strategy Info
+    # Strategy guide
     with st.expander("📖 BPJS Strategy Guide"):
         st.markdown("""
         **BPJS = Beli Pagi Jual Sore (Day Trading)**
@@ -1350,21 +1334,9 @@ def render_bpjs_section():
         | Buy | 08:30 - 10:00 | Beli di morning session |
         | Sell | 14:00 - 15:30 | Jual sebelum close |
 
-        **Score Components:**
-        - Morning Momentum (30%): Harga naik di pagi
-        - Morning Volume (25%): Volume spike di pagi
-        - BPJS Volatility (20%): Range harga harian
-        - Pre-Closing (15%): Momentum sebelum closing
-        - Gap Open (10%): Gap open di pagi
-
-        **Entry Windows:**
-        - 08:30-09:00: Gap Up - masuk langsung
-        - 09:00-09:30: Wait Pullback - tunggu pullback dulu
-        - 09:30-10:00: Confirm Trend - konfirmasi trend dulu
-
         **Tips:**
-        - Target 1-3% per trade
-        - Stoploss 0.5-1%
+        - Target 1.5-2% per trade
+        - Stoploss 1%
         - Jangan hold overnight!
         - Cut loss cepat kalo salah arah
         """)
